@@ -28,3 +28,19 @@ function chiilog_copyright_use_hook_block_init() {
 	register_block_type( __DIR__ . '/build' );
 }
 add_action( 'init', 'chiilog_copyright_use_hook_block_init' );
+
+function add_copyright_block_after_post_title_block( $hooked_block_types, $relative_position, $anchor_block_type, $context ) {
+
+	// Only hook the block on Single templates (posts).
+	if ( ! $context instanceof WP_Block_Template || ! property_exists( $context, 'slug' ) || 'single' !== $context->slug ) {
+		return $hooked_block_types;
+	}
+
+	// Hook the block after the Post Content block.
+	if ( 'after' === $relative_position && 'core/post-title' === $anchor_block_type ) {
+		$hooked_block_types[] = 'chiilog-blocks/copyright-use-hook';
+	}
+
+	return $hooked_block_types;
+}
+add_filter( 'hooked_block_types', 'add_copyright_block_after_post_title_block', 10, 4 );
