@@ -44,3 +44,20 @@ function add_copyright_block_after_post_title_block( $hooked_block_types, $relat
 	return $hooked_block_types;
 }
 add_filter( 'hooked_block_types', 'add_copyright_block_after_post_title_block', 10, 4 );
+
+function remove_hooked_like_button_block_after_post_content( $parsed_hooked_block, $hooked_block_type, $relative_position, $parsed_anchor_block, $context  ) {
+
+	// Has the hooked block been suppressed by a previous filter?
+	if ( is_null( $parsed_hooked_block ) ) {
+		return $parsed_hooked_block;
+	}
+
+	// Remove any Like Button blocks hooked after Post Content.
+	if ( 'core/post-content' === $parsed_anchor_block['blockName'] ) {
+		return null;
+	}
+
+	return $parsed_hooked_block;
+}
+// Priority is set to 15.
+add_filter( 'hooked_block_chiilog-blocks/copyright-use-hook', 'remove_hooked_like_button_block_after_post_content', 15, 5 );
